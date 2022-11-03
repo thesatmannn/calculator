@@ -1,2 +1,59 @@
 button {
+    margin: 1px;
+    border-radius: 5%;
+    border: none;
+    font-weight: initial;
+    font-size: 2em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: black;
+    background-color: #383838;
+
+}
+
+#container {
+    background-color: black;
+    border: 15px solid rgb(241, 41, 41);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: repeat(4, 125px);
+    grid-template-rows: minmax(125px, auto) repeat(5, 95px);
+    gap: 2px;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.84),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#zero {
+    grid-column: span 2;
+}
+
+#display { 
+    grid-column: 1 / -1;
+    background-color: #f7eaea;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding: 5px;
+    font-size: 5.5em;
+    font-weight: initial;
+    text-shadow: 1.3px 1.3px #383838;
+    margin: 5px;
+    
+}
+
+#calc {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    background-color: rgb(50, 167, 167);
+}
+
+.clear, .sign, .percent {
+    background-color: aqua;
+}
+
+.operator, .equals {
+    background-color: rgb(233, 255, 36);
 }
