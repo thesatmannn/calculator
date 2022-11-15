@@ -1,141 +1,197 @@
-const buttons = document.querySelectorAll('button');
-const display = document.getElementById('display');
-let displayValue = "0";
+let displayValue = '0';
 let firstOperand = null;
 let secondOperand = null;
 let firstOperator = null;
 let secondOperator = null;
 let total = null;
+const buttons = document.querySelectorAll('button');
 
-
-function operate(x, y, operator){
-    if(operator == '+'){
-        return add();
+function operate(x, y, operator) {
+    if(operator === '+') {
+        return x + y;
+    } 
+    else if(operator === '-') {
+        return x - y;
+    } 
+    else if(operator === '*') {
+        return x * y;
+    } 
+    else if(operator === '/') {
+        if(y === 0) {
+            return 'ERROR 404';
+        } 
+        else {
+        return x / y;
+        }
     }
-    else if (operator == '-'){
-        return subtract();
+}
+
+function getDisplay() {
+    const display = document.getElementById('display');
+    display.innerText = displayValue;
+    if(displayValue.length > 9) {
+        display.innerText = displayValue.substring(0, 9);
     }
-    else if (operator == '*'){
-        return multiply();
-    }
-    else {
-        divide();
-    }
 }
+  
+getDisplay();
 
-function add(x, y){
-    return x + y;
-}
-
-function subtract(x, y){
-    return x - y;
-}
-
-function multiply(x, y){
-    return x * y;
-}
-
-function divide(x, y){
-    return x / y;
-}
-
-function getDisplayValue() {
-  display.innerText = displayValue;
-  if (displayValue.length > 9) {
-    display.innerText = displayValue.substring(0, 9);
-  }
-}
-getDisplayValue();
-
-function buttonClick() {
+function clickButton() {
     for(let i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener('click', function(e){
+        buttons[i].addEventListener('click', function() {
             if(buttons[i].classList.contains('operand')) {
-                inputOperand(buttons[i].value);
-                getDisplayValue();
-            } else if(buttons[i].classList.contains('operator')) {
-                inputOperator(buttons[i].value);
-            } else if(buttons[i].classList.contains('equals')) {
-                inputEquals();
-                getDisplayValue();
-            } else if(buttons[i].classList.contains('decimal')) {
-                inputDecimal(buttons[i].value);
-                getDisplayValue();
-            } else if(buttons[i].classList.contains('percent')) {
-                inputPercent(displayValue);
-                getDisplayValue();
-            } else if(buttons[i].classList.contains('sign')) {
-                inputSign(displayValue);
-                getDisplayValue();
-            } else if(buttons[i].classList.contains('clear'))
+                addOperand(buttons[i].value);
+                getDisplay();
+            } 
+            else if(buttons[i].classList.contains('operator')) {
+                addOperator(buttons[i].value);
+            } 
+            else if(buttons[i].classList.contains('equals')) {
+                addEquals();
+                getDisplay();
+            } 
+            else if(buttons[i].classList.contains('decimal')) {
+                addDecimal(buttons[i].value);
+                getDisplay();
+            } 
+            else if(buttons[i].classList.contains('percent')) {
+                addPercent(displayValue);
+                getDisplay();
+            } 
+            else if(buttons[i].classList.contains('sign')) {
+                addSign(displayValue);
+                getDisplay();
+            } 
+            else if(buttons[i].classList.contains('clear'))
                 clearDisplay();
-                getDisplayValue();
-            }
-            
-        )}
-    }
+                getDisplay();
+        }
+    )}
+}
 
-buttonClick();
+clickButton();
 
-function inputOperand(operand) {
+function addOperand(operand) {
     if(firstOperator === null) {
         if(displayValue === '0' || displayValue === 0) {
+           
             displayValue = operand;
-        } else if(displayValue === firstOperand) {
+        } 
+        else if(displayValue === firstOperand) {
+            
             displayValue = operand;
-        } else {
+        } 
+        else {
             displayValue += operand;
         }
-    } else {
+    } 
+    else {
         if(displayValue === firstOperand) {
             displayValue = operand;
-        } else {
+        } 
+        else {
             displayValue += operand;
         }
     }
 }
 
-function inputEquals() {
-    if(firstOperator === null) {
-        displayValue = displayValue;
-    } else if(secondOperator != null) {
+function addOperator(operator) {
+    if(firstOperator != null && secondOperator === null) {
+        secondOperator = operator;
         secondOperand = displayValue;
-        result = operate(Number(firstOperand), Number(secondOperand), secondOperator);
-        if(result === 'lmao') {
-            displayValue = 'lmao';
-        } else {
-            displayValue = roundAccurately(result, 15).toString();
-            firstOperand = displayValue;
-            secondOperand = null;
-            firstOperator = null;
-            secondOperator = null;
-            result = null;
-        }
-    } else {
+        total = operate(Number(firstOperand), Number(secondOperand), firstOperator);
+        displayValue = round(total, 15).toString();
+        firstOperand = displayValue;
+        total = null;
+    } 
+    else if(firstOperator != null && secondOperator != null) {
         secondOperand = displayValue;
-        result = operate(Number(firstOperand), Number(secondOperand), firstOperator);
-        if(result === 'ERROR 404') {
-            displayValue = "ERROR 404";
-        } else {
-            displayValue = roundAccurately(result, 15).toString();
-            firstOperand = displayValue;
-            secondOperand = null;
-            firstOperator = null;
-            secondOperator = null;
-            result = null;
-        }
+        total = operate(Number(firstOperand), Number(secondOperand), secondOperator);
+        secondOperator = operator;
+        displayValue = round(total, 15).toString();
+        firstOperand = displayValue;
+        total = null;
+    } 
+    else { 
+        firstOperator = operator;
+        firstOperand = displayValue;
     }
 }
 
-function inputDecimal(dot) {
+
+function addDecimal(point) {
     if(displayValue === firstOperand || displayValue === secondOperand) {
         displayValue = '0';
-        displayValue += dot;
-    } else if(!displayValue.includes(dot)) {
-        displayValue += dot;
+        displayValue += point;
+    } 
+    else if(!displayValue.includes(point)) {
+        displayValue += point;
     } 
 }
 
-function inputPercent(num) {
+function addPercent(num) {
     displayValue = (num/100).toString();
+}
+
+function addSign(num) {
+    displayValue = (num * -1).toString();
+}
+
+function addEquals() {
+    if(firstOperator === null) {
+        displayValue = displayValue;
+    } else if(secondOperator != null) {
+
+        secondOperand = displayValue;
+        total = operate(Number(firstOperand), Number(secondOperand), secondOperator);
+        if(total === 'ERROR 404') {
+            displayValue = 'ERROR 404';
+        } 
+        else {
+            displayValue = round(total, 15).toString();
+            firstOperand = displayValue;
+            secondOperand = null;
+            firstOperator = null;
+            secondOperator = null;
+            total = null;
+        }
+    } 
+    else {
+        secondOperand = displayValue;
+        total = operate(Number(firstOperand), Number(secondOperand), firstOperator);
+        if(total === 'ERROR 404') {
+            displayValue = 'ERROR 404';
+        } 
+        else {
+            displayValue = round(total, 15).toString();
+            firstOperand = displayValue;
+            secondOperand = null;
+            firstOperator = null;
+            secondOperator = null;
+            total = null;
+        }
+    }
+}
+
+
+function clearDisplay() {
+    displayValue = '0';
+    firstOperand = null;
+    secondOperand = null;
+    firstOperator = null;
+    secondOperator = null;
+    total = null;
+}
+
+function addBackspace() {
+    if(firstOperand != null) {
+        firstOperand = null;
+        getDisplay();
+    }
+}
+
+
+
+function round(num, places) {
+    return parseFloat(Math.round(num + 'e' + places) + 'e-' + places);
 }
